@@ -1,5 +1,6 @@
-const bcrypt = require('bcryptjs');
-const User = require('../user/model')
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const User = require("../user/model");
 
 exports.hashPassword = async(req, res, next) => {
     try {
@@ -25,3 +26,13 @@ exports.decryptPassword = async(req,res,next) => {
     }
 };
 
+exports.tokenCheck = async(req, res, next)=>{
+    try{
+        const decodedToken = jwt.verify(req.header("Authorization"), process.env.SECRET);
+        req.user = await User.findById(decodedToken.id);
+        next()
+    }catch(error){
+        console.log(error)
+        res.send({error})
+    }
+}
