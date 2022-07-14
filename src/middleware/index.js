@@ -4,8 +4,11 @@ const User = require("../user/model");
 
 exports.hashPassword = async(req, res, next) => {
     try {
+        if(req.body.password){
         req.body.password = await bcrypt.hash(req.body.password, 8);
-        next();
+        } else if (req.body.updateObj.password){
+            req.body.updateObj.password = await bcrypt.hash(req.body.updateObj.password, 8);
+        } next();
     } catch (error) {
         console.log(error);
         res.send({error});

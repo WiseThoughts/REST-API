@@ -64,10 +64,38 @@ exports.updateEmail = async (req, res)=>{
 
 exports.updatePassword = async (req, res)=>{
     try{
-        const updateUser = await User.updateOne({username: req.body.username}, {$set:{password: req.body.password}});
-        res.send({updateUser, message: `updated password for ${req.body.username}`});
+        const updatePassword = await User.updateOne({username: req.body.username}, {$set:{password: req.body.password}});
+        res.send({updatePassword, message: `updated password for ${req.body.username}`});
     }catch(error){
         console.log(error)
         res.send({error, message:"update password error"})
     }
 };
+
+exports.updateUser = async (req, res) =>{
+    try{
+        const result = await User.updateOne(req.body.filterObj, req.body.updateObj);
+        if (result.modifiedCount >0){
+            res.send({message: "succesfully updated user via contoller"})
+        } else{
+            throw new Error ({message: "error from updateuser controller"})
+        } 
+    }catch(error){
+        console.log(error);
+        res.send({message: "update user error"}, error)
+    }
+}
+
+exports.deleteUserTok = async (req, res) =>{
+    try{
+        const result = await User.deleteOne({_id: req.user._id});
+        if (result.deletedCount >0){
+            res.send({message: "succesfully deleted user"})
+        } else{
+            throw new Error ({message: "error from deleteUserTok controller"})
+        } 
+    }catch(error){
+        console.log(error);
+        res.send({message: "delete user error"}, error)
+    }
+}
